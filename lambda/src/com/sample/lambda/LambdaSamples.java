@@ -1,8 +1,11 @@
 package com.sample.lambda;
 
+import com.util.ValueCopier;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by HARI on 12/22/2015.
@@ -47,8 +50,40 @@ public class LambdaSamples {
 
         listView.replaceAll(v -> {v.setId("Nothing"); v.setDesc("NothingDesc"); return v;});
         listView.forEach(v -> System.out.println(v.getDesc()));
+//        listView.stream().map(v -> {v.setId();})
 
-//        Collections.copy(listDomain,listView);
+        Function<Domain, View> mapper1
+                = new Function<Domain, View>() {
+            @Override
+            public View apply(Domain domain) {
+                return null;
+            }
+        };
+
+        Function<Domain, View> mapper
+                = d -> {
+            View v = new View();
+            v.setDesc(d.getDescription());
+            v.setId(d.getIdentifier());
+            return v;
+        };
+
+        List<View> viewList = listDomain.stream()
+                .map(mapper)
+                .collect(Collectors.<View> toList());
+
+        viewList.forEach(v -> System.out.println(v.getDesc()));
+
+//        ListMapper<Domain,View> collectionCopier = new ListMapper<>(){
+//
+//        };
+
+        ValueCopier<Domain,View> valueCopier = new ValueCopier<>();
+
+        List<View> viewList2 = valueCopier.copyValuesFromObjectList(listDomain, mapper);
+
+        viewList2.forEach(v -> System.out.println(v.getDesc()));
+
         System.out.println("finished");
 
     }
